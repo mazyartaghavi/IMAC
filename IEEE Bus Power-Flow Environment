@@ -18,3 +18,41 @@ class ACGridModel:
         J_inv = np.linalg.pinv(self.Ybus.real)
         delta_v = J_inv @ (P + Q)
         return self.V_ref + delta_v
+
+
+import gym
+import numpy as np
+from grid.power_flow import ACGridModel
+
+class SmartGridEnv(gym.Env):
+    """
+    Multi-agent smart grid environment with DER dynamics.
+    """
+
+    def __init__(self, Ybus, n_agents):
+        self.grid = ACGridModel(Ybus)
+        self.n_agents = n_agents
+
+        self.action_space = gym.spaces.Box(-1, 1, (n_agents,))
+        self.observation_space = gym.spaces.Box(
+            low=0.9, high=1.1, shape=(n_agents,)
+        )
+
+        self.state = np.ones(n_agents)
+
+    def step(self, actions):
+        P = actions
+        Q = 0.1 * actions
+
+        voltages = self.grid.voltage_update(P, Q)
+        cost = np.sum((voltages - 1.0) ** 2)
+
+        reward = -cost
+        self.state = voltages
+
+        done = False
+        return voltages, reward, done, {}
+
+    def reset(self):
+        self.state = np.ones(self.n_agents)
+        return self.state
