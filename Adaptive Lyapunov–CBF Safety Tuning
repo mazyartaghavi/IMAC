@@ -1,0 +1,24 @@
+import numpy as np
+
+class AdaptiveSafetyTuner:
+    """
+    Dynamically adjusts Lyapunov and CBF penalty weights based on
+    renewable intermittency and constraint violation statistics.
+    """
+
+    def __init__(self, alpha_init=1.0, beta_init=1.0, lr=0.01):
+        self.alpha = alpha_init  # Lyapunov weight
+        self.beta = beta_init    # CBF weight
+        self.lr = lr
+
+    def update(self, violation_rate, intermittency_index):
+        """
+        Adjust safety weights online.
+        """
+        self.alpha += self.lr * (violation_rate - 0.05)
+        self.beta += self.lr * intermittency_index
+
+        self.alpha = np.clip(self.alpha, 0.1, 10.0)
+        self.beta = np.clip(self.beta, 0.1, 10.0)
+
+        return self.alpha, self.beta
