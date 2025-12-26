@@ -1,0 +1,20 @@
+import numpy as np
+
+class ACGridModel:
+    """
+    Linearized AC power-flow model for DER coordination.
+    """
+
+    def __init__(self, Ybus, V_ref=1.0):
+        self.Ybus = Ybus
+        self.n_bus = Ybus.shape[0]
+        self.V_ref = V_ref
+
+    def voltage_update(self, P, Q):
+        """
+        Linearized voltage deviation model:
+        ΔV ≈ J⁻¹ [ΔP ΔQ]
+        """
+        J_inv = np.linalg.pinv(self.Ybus.real)
+        delta_v = J_inv @ (P + Q)
+        return self.V_ref + delta_v
