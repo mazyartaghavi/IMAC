@@ -1,0 +1,17 @@
+import csv
+
+class ExperimentLogger:
+    """
+    Lightweight logger for convergence and stability metrics.
+    """
+
+    def __init__(self, filename):
+        self.file = open(filename, "w", newline="")
+        self.writer = csv.writer(self.file)
+        self.writer.writerow(["episode", "reward", "spectral_radius"])
+
+    def log(self, episode, reward, rho):
+        self.writer.writerow([episode, reward, rho])
+
+    def close(self):
+        self.file.close()
