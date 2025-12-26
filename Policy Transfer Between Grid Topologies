@@ -1,0 +1,8 @@
+def transfer_weights(source_actor, target_actor):
+    """
+    Transfers compatible layers between grid topologies.
+    """
+    for src, tgt in zip(source_actor.parameters(),
+                        target_actor.parameters()):
+        if src.data.shape == tgt.data.shape:
+            tgt.data.copy_(src.data)
