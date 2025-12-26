@@ -1,0 +1,21 @@
+import torch
+import torch.nn as nn
+
+class CentralizedCritic(nn.Module):
+    """
+    Centralized critic using global grid state and agent embeddings.
+    """
+
+    def __init__(self, state_dim, action_dim, n_agents):
+        super().__init__()
+        self.fc = nn.Sequential(
+            nn.Linear(state_dim + action_dim * n_agents, 256),
+            nn.ReLU(),
+            nn.Linear(256, 256),
+            nn.ReLU(),
+            nn.Linear(256, 1)
+        )
+
+    def forward(self, global_state, joint_action):
+        x = torch.cat([global_state, joint_action], dim=-1)
+        return self.fc(x)
