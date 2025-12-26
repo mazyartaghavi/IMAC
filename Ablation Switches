@@ -1,0 +1,12 @@
+class AblationConfig:
+    """
+    Enables systematic component removal.
+    """
+
+    def __init__(self,
+                 use_quantum=True,
+                 use_cbf=True,
+                 use_lyapunov=True):
+        self.use_quantum = use_quantum
+        self.use_cbf = use_cbf
+        self.use_lyapunov = use_lyapunov
