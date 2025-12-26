@@ -1,0 +1,22 @@
+from marl.centralized_critic import CentralizedCritic
+from control.adaptive_safety_tuner import AdaptiveSafetyTuner
+from analysis.convergence_metrics import convergence_speed
+
+def run():
+    print("Running H-MAC-Q experiment...")
+
+    safety = AdaptiveSafetyTuner()
+    rewards = []
+
+    for episode in range(500):
+        violation_rate = 0.02
+        intermittency = 0.3
+        alpha, beta = safety.update(violation_rate, intermittency)
+
+        reward = 1.0 / (1.0 + alpha + beta)
+        rewards.append(reward)
+
+    print("Convergence step:", convergence_speed(rewards))
+
+if __name__ == "__main__":
+    run()
