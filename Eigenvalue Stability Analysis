@@ -1,0 +1,9 @@
+import numpy as np
+
+def stability_margin(system_matrix):
+    """
+    Computes spectral radius for discrete-time stability analysis.
+    """
+    eigenvalues = np.linalg.eigvals(system_matrix)
+    rho = max(abs(eigenvalues))
+    return rho, eigenvalues
