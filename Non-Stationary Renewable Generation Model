@@ -1,0 +1,13 @@
+import numpy as np
+
+class RenewableProfile:
+    """
+    Stochastic renewable generation with intermittency.
+    """
+
+    def __init__(self, sigma=0.2):
+        self.sigma = sigma
+
+    def sample(self, base_generation):
+        noise = np.random.normal(0, self.sigma, size=base_generation.shape)
+        return np.maximum(0, base_generation + noise)
