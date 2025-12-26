@@ -1,0 +1,16 @@
+import numpy as np
+
+def adjacency_mask(n_agents, topology="radial"):
+    """
+    Sparse communication graph for decentralized execution.
+    """
+    A = np.zeros((n_agents, n_agents))
+
+    if topology == "radial":
+        for i in range(n_agents - 1):
+            A[i, i + 1] = 1
+            A[i + 1, i] = 1
+    else:
+        A[:] = 1
+
+    return A
