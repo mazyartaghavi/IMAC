@@ -1,0 +1,27 @@
+import cvxpy as cp
+import numpy as np
+
+class CBFProjection:
+    """
+    Quadratic program for projecting unsafe MARL actions
+    onto safe control sets.
+    """
+
+    def __init__(self, action_dim):
+        self.u = cp.Variable(action_dim)
+        self.u_ref = cp.Parameter(action_dim)
+        self.A = cp.Parameter((1, action_dim))
+        self.b = cp.Parameter(1)
+
+        self.problem = cp.Problem(
+            cp.Minimize(cp.sum_squares(self.u - self.u_ref)),
+            [self.A @ self.u <= self.b]
+        )
+
+    def project(self, u_ref, A, b):
+        self.u_ref.value = u_ref
+        self.A.value = A
+        self.b.value = b
+
+        self.problem.solve(solver=cp.OSQP, warm_start=True)
+        return self.u.value
