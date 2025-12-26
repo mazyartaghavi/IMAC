@@ -1,0 +1,21 @@
+from qiskit_algorithms import QAOA
+from qiskit_algorithms.optimizers import COBYLA
+from qiskit.primitives import Sampler
+from qiskit_optimization.algorithms import MinimumEigenOptimizer
+
+class QuantumInspiredOptimizer:
+    """
+    Quantum-inspired optimizer using simulated QAOA (Qiskit Aer).
+    """
+
+    def __init__(self, reps=2):
+        self.qaoa = QAOA(
+            sampler=Sampler(),
+            optimizer=COBYLA(),
+            reps=reps
+        )
+
+    def solve(self, quadratic_program):
+        optimizer = MinimumEigenOptimizer(self.qaoa)
+        result = optimizer.solve(quadratic_program)
+        return result.x
